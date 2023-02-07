@@ -54,7 +54,9 @@ macro(iree_set_llvm_cmake_options)
   set(MLIR_ENABLE_BINDINGS_PYTHON OFF CACHE BOOL "")
   set(MHLO_ENABLE_BINDINGS_PYTHON OFF CACHE BOOL "")
 
-  # If we are building LLD, this will be the target. Otherwise, empty.
+  # If we are building clang/lld/etc these will be the targets.
+  # Otherwise, empty to disable building them.
+  set(IREE_CLANG_TARGET)
   set(IREE_LLD_TARGET)
 
   # Unconditionally enable mlir.
@@ -65,10 +67,12 @@ macro(iree_set_llvm_cmake_options)
   if(IREE_TARGET_BACKEND_CUDA)
     message(STATUS "  - cuda")
     list(APPEND LLVM_TARGETS_TO_BUILD NVPTX)
+    set(IREE_CLANG_TARGET clang)
   endif()
   if(IREE_TARGET_BACKEND_LLVM_CPU)
     message(STATUS "  - llvm-cpu")
     list(APPEND LLVM_TARGETS_TO_BUILD "${IREE_DEFAULT_CPU_LLVM_TARGETS}")
+    set(IREE_CLANG_TARGET clang)
     set(IREE_LLD_TARGET lld)
   endif()
   if(IREE_TARGET_BACKEND_LLVM_CPU_WASM)
@@ -93,6 +97,9 @@ macro(iree_set_llvm_cmake_options)
     message(STATUS "  - webgpu")
   endif()
 
+  if(IREE_CLANG_TARGET)
+    list(APPEND LLVM_ENABLE_PROJECTS clang)
+  endif()
   if(IREE_LLD_TARGET)
     list(APPEND LLVM_ENABLE_PROJECTS lld)
   endif()
