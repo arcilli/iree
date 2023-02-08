@@ -18,7 +18,7 @@ endif()
 # Default to using our own clang. The NVCC route is preserved as an example but
 # to allow for consistent cross-compiling we default to clang - they should be
 # effectively the same for our purposes (device only code to LTO-IR/PTX).
-set(_BUILD_WITH_NVCC OFF)
+set(_BUILD_WITH_NVCC ON)
 
 if(_BUILD_WITH_NVCC)
   include(CheckLanguage)
